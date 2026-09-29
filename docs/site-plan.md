@@ -1,6 +1,6 @@
 # Fluidswap by Monark: site plan
 
-Status: plan written before the build, kept in sync with what ships on `develop`.
+Status: shipped on `develop`. This plan was written before the build and has been updated to describe what shipped (see §12 for implementation decisions).
 
 - Product: **Fluidswap**, the swapping and liquidity demo of the Monark DeFi family (the trader's view).
 - Authoritative description: https://www.monark.io/en/project/defi-swaps
@@ -103,7 +103,7 @@ All routes live under `/{locale}` (`en`, `fr`). `/` and any locale-less path red
 
 Every value-moving action goes through a simulated wallet prompt ("Confirm in your wallet": action summary, network, estimated network fee, the testnet disclaimer, *Confirm* / *Reject*), then a **pending** state with a transaction hash (1.2–2.4 s; 3–6 s with "slow network"), then **confirmed** or **failed**. Demo controls can force the next transaction to revert, make the market move against the next swap, slow the network, pause the live market, and reset the demo. Rejecting in the prompt always gives the "rejected" failure. Failed transactions are recorded in the history with their reason.
 
-1. **Connect a wallet and get test tokens.** `/app` works without a wallet (quotes, pools, curve), and the action button reads "Connect wallet". *Connect* → prompt "Sign in to Fluidswap" (no fee) → *pending* ("Waiting for signature…") → *connected*: header shows the `connect-wallet` chip (Jazzicon + `0x5c1E…a7D2`), balances appear. *Failed*: "You declined the sign-in request. Nothing was shared." with retry. Then *Get test tokens* (faucet) → prompt → *pending* → *confirmed*: balances rise, "Test tokens received" toast.
+1. **Connect a wallet and get test tokens.** `/app` works without a wallet (quotes, pools, curve), and the action button reads "Connect wallet". *Connect* → prompt "Sign in to Fluidswap" (no fee) → *pending* ("Waiting for signature…") → *connected*: header shows the `connect-wallet` chip (Jazzicon + `0x5c1E…a7D2`), balances appear. *Failed*: "You declined the sign-in request. Nothing was shared." with retry. Then *Get test tokens* (faucet) → prompt → *pending* → *confirmed*: balances rise, "Test tokens received" shown inline in the balances sheet.
 2. **Swap with a full quote.** Pick pay/receive tokens, type an amount (or *Max*) → quote updates live: you receive, rate, route (direct or via tETH/tUSDC), pool fee, price impact with label (Low < 1 %, Noticeable 1–5 %, High > 5 %), minimum received at the slippage tolerance (0.10 / 0.50 / 1.00 % or custom). The curve panel draws the move. High impact requires ticking "I understand this trade moves the price by X %". Insufficient balance and empty amount disable the button with the reason. *Swap* → prompt → *pending* (the reserve tanks shift, hash shown) → *confirmed*: receipt "Swapped 1.5 tETH for 4,777.21 tUSDC", balances and pool reserves update, the curve point stays at its new place. *Failed* variants: rejected; **slippage exceeded** ("Another trade moved the price by 1.8 % before yours landed. That's beyond your 0.50 % tolerance, so the swap reverted. Only the network fee was spent.") when "market moves" is on; generic revert with *Try again*.
 3. **Provide liquidity (or create a pool).** Pools → tETH/tUSDC → *Add* → type one amount, the other fills at the pool ratio → preview: LP tokens minted, your new share of the pool, deposit value → *Add liquidity* → prompt → *pending* → *confirmed*: position card updates (share, value), pool TVL rises. *Create a pool*: for a pair without one (e.g. tLINK/tDAI), choose both amounts, which set the starting price (pre-filled at reference prices, with a warning if you stray from them: arbitrage will correct it at your expense) → you are the first LP with 100 % share. *Failed*: "The deposit reverted. Your tokens are still in your wallet." with retry; insufficient balance blocks the button.
 4. **Withdraw liquidity.** Your position → *Remove* → 25 / 50 / 75 / 100 % chips or slider → preview: tokens you get back, fees earned included, LP tokens burned, and the comparison with holding (impermanent loss in % and value) → *Remove* → prompt → *pending* → *confirmed*: balances rise, position shrinks or closes ("Position closed"). *Failed*: as above.
@@ -244,3 +244,28 @@ A designed `/{locale}/pricing` page exists **for internal review only**: not lin
 - Price oracles and real market data: prices move only through trades in the simulation (yours, the live market's, and the "market moves" control).
 - Lending, borrowing and risk dashboards: those belong to Yieldmine, BorrowX and VaultLend.
 - A `/brand` page, a blog, accounts or any backend.
+
+## 12. Implementation notes (as shipped)
+
+Decisions made while building unattended:
+
+- **Theme.** The brief says not to install `theme-2026.json`, so I installed `theme.json` from ui.monark.io and pasted the guidelines' §3 token block over it in `src/app/globals.css`. I also added muted `--success` and `--warning` colours for the health and impact states, which always appear with a text label.
+- **Registry components.** The `@monark` registry is registered in `components.json`. `button`, `input`, `select`, `tabs`, `dialog`, `sheet`, `slider`, `switch`, `checkbox`, `tooltip`, `dropdown-menu`, `sonner`, `wallet`, `token-amount`, `network-badge` and `tx-status` came from the CLI. `connect-wallet` and `swap-form` don't resolve through the CLI (their bare `wallet` dependency points at the shadcn default registry), so I copied their source from the registry JSON.
+  - `swap-form` gained localizable labels, balance hints, a Max action, a settings-panel slot and slots for quote details and the footer.
+  - `wallet`, `dialog`, `sheet` and `slider` gained localizable accessible labels.
+  - Every component was restyled to Monark pills and rounded fields.
+- **Maths.** Amounts are JS numbers in token units rather than bigint base units. Double precision is enough for a teaching demo, and `toBaseUnits()` converts them for the registry `token-amount`. Routing tries every simple path of up to 3 pools and picks the best output. Price impact is shown excluding fees, and the fees are shown separately.
+- **Impermanent loss** is valued at the pool's own price, the classic view. The shared reference prices are constant across the DeFi family, so valuing at those prices would hide it.
+- **Fee vote.** The tally is in LP tokens: 31 % for and 34 % against, with the visitor's 8 % deciding. The quorum is 50 % of the LP supply. "End the vote now (demo)" executes the result, and a passed vote changes the pool's fee for future quotes.
+- **Toasts.** Every transaction reports inline, next to the button that started it, as signing → pending (with hash) → confirmed or failed, with the reason and a retry. Toasts appear only when the panel that would report a result disappears: pool created, position closed, demo reset. They sit bottom-left, away from the right-hand panels and sheets. An early version showed top-right toasts on every action, and those covered the balances button and the position card, so I dropped them.
+- **Live market.** Other traders swap every 6–11 s while the exchange tab is visible, mostly as arbitrage back toward the reference prices. Their trades accrue LP fees to positions. It can be paused in the demo controls, and the screenshot script pauses it so captures are stable.
+- **Routes.** Every one of the 10 pairs is prerendered under `/app/pools/[id]` (`dynamicParams = false`). A pair with no pool renders the "create a pool" form.
+- **Dependencies beyond the stack.**
+  - `next-themes` provides the theme toggle without a flash of the wrong theme.
+  - `sonner` provides the toasts.
+  - `react-jazzicon` is required by the registry `wallet` component.
+  - The Radix primitives come with the registry components.
+  - `playwright` is a dev dependency, used for `pnpm screenshots`.
+  - I didn't use recharts: the charts are small and drawn in SVG.
+- **Photos.** I used two photos instead of three, one per page. The product UI carries the rest.
+- **Screenshots** are in `docs/screenshots/`: every page and flow at 390 and 1440 px, in light and dark, in English, plus the home page, the swap flow and a pool page in French.
