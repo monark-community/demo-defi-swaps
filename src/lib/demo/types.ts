@@ -46,7 +46,8 @@ export type ProposalStatus = "open" | "passed" | "rejected"
 
 export interface Proposal {
   id: string
-  /** Proposed fee tier as a fraction (0.003 = 0.30 %). */
+  /** Fee tier when the proposal was made, and the proposed one, as fractions (0.003 = 0.30 %). */
+  fromFee: number
   newFee: number
   /** LP tokens voting for / against, excluding the visitor. */
   forLp: number

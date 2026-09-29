@@ -138,6 +138,7 @@ export function createSeed(): DemoState {
   // the visitor's 8 % decides the outcome.
   linkUsdc.proposal = {
     id: "prop-link-usdc-1",
+    fromFee: 0.01,
     newFee: 0.003,
     forLp: 0.31 * linkUsdc.lpSupply,
     againstLp: 0.34 * linkUsdc.lpSupply,
