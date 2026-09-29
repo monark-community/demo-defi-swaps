@@ -15,7 +15,6 @@ import { toBaseUnits, TOKENS, TOKEN_LIST, usdOf } from "@/lib/demo/tokens"
 import { formatToken, formatUsd } from "@/lib/format"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { TokenMark } from "./token-mark"
 import { TxFeedback } from "./tx-feedback"
 import { ConnectButton } from "./connect-button"
@@ -23,7 +22,7 @@ import { ConnectButton } from "./connect-button"
 /** Balances and the testnet faucet, one tap away in the app bar. */
 export function WalletSheet() {
   const demo = useDemo()
-  const { app, locale, close, tokens, disclaimer } = useAppCopy()
+  const { app, locale, close, tokens } = useAppCopy()
   const w = app.wallet
   const tx = useTx()
   const connected = demo?.wallet.status === "connected"
@@ -91,7 +90,6 @@ export function WalletSheet() {
                 <DropletIcon aria-hidden="true" />
                 {w.faucet}
               </Button>
-              <Disclaimer text={disclaimer} />
             </div>
           </>
         ) : (

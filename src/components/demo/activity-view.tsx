@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { TxStatus } from "@/components/ui/tx-status"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
-import { poolTvlUsd } from "@/lib/demo/amm"
 import { useDemo } from "@/lib/demo/store"
 import { pairById } from "@/lib/demo/tokens"
 import type { ActivityEntry, ActivityKind } from "@/lib/demo/types"
@@ -21,6 +20,9 @@ import { PageSkeleton } from "./pools-view"
 import { PairMark } from "./token-mark"
 
 type Filter = "all" | "swaps" | "liquidity" | "votes" | "failed"
+
+/** History rows shown at a time. */
+const PAGE = 5
 
 const KIND_ICONS: Record<ActivityKind, typeof PlusIcon> = {
   swap: ArrowUpDownIcon,
@@ -44,6 +46,7 @@ export function ActivityView() {
   const { app, locale } = useAppCopy()
   const ac = app.activity
   const [filter, setFilter] = useState<Filter>("all")
+  const [shown, setShown] = useState(PAGE)
 
   if (!demo) return <PageSkeleton />
   const connected = demo.wallet.status === "connected"
@@ -58,10 +61,7 @@ export function ActivityView() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:py-10">
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-display">{ac.title}</h1>
-        <p className="mt-1 max-w-prose text-sm text-muted-foreground">{ac.intro}</p>
-      </div>
+      <h1 className="text-3xl font-extrabold tracking-display">{ac.title}</h1>
 
       {!connected ? (
         <div className="flex flex-col items-start gap-3 rounded-3xl border border-dashed p-6">
@@ -97,7 +97,10 @@ export function ActivityView() {
                       size="sm"
                       variant={filter === f ? "default" : "outline"}
                       aria-pressed={filter === f}
-                      onClick={() => setFilter(f)}
+                      onClick={() => {
+                        setFilter(f)
+                        setShown(PAGE)
+                      }}
                       className="shrink-0"
                     >
                       {ac.filters[f]}
@@ -106,11 +109,18 @@ export function ActivityView() {
                 </div>
               </div>
               {items.length ? (
-                <ul className="mt-4 divide-y">
-                  {items.map((a) => (
-                    <HistoryRow key={a.id} entry={a} />
-                  ))}
-                </ul>
+                <>
+                  <ul className="mt-4 divide-y">
+                    {items.slice(0, shown).map((a) => (
+                      <HistoryRow key={a.id} entry={a} />
+                    ))}
+                  </ul>
+                  {items.length > shown ? (
+                    <Button variant="outline" size="sm" className="mt-2" onClick={() => setShown((n) => n + PAGE)}>
+                      {ac.showMore}
+                    </Button>
+                  ) : null}
+                </>
               ) : (
                 <div className="mt-4 flex flex-col items-start gap-3 rounded-2xl border border-dashed p-5">
                   <p className="text-sm text-muted-foreground">{demo.activity.length ? ac.emptyFiltered : ac.empty}</p>
@@ -141,9 +151,6 @@ export function ActivityView() {
                       </span>
                       <span className="h-2.5 overflow-hidden rounded-full bg-muted" aria-hidden="true">
                         <span className="block h-full rounded-full bg-primary transition-[width] duration-200" style={{ width: `${Math.max(1.5, (p.volumeUsd24h / maxVol) * 100)}%` }} />
-                      </span>
-                      <span className="text-xs text-muted-foreground tabular-nums">
-                        {app.pools.tvl}: {formatUsd(poolTvlUsd(p), locale, { compact: true })}
                       </span>
                     </Link>
                   </li>

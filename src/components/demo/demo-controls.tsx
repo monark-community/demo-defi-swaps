@@ -71,7 +71,6 @@ export function DemoControls() {
             <RotateCcwIcon aria-hidden="true" />
             {c.reset}
           </Button>
-          <p className="mt-2 text-xs text-muted-foreground">{c.resetHint}</p>
         </div>
       </SheetContent>
     </Sheet>

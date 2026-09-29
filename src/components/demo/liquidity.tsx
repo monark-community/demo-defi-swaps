@@ -5,6 +5,7 @@ import { useId, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
@@ -23,7 +24,6 @@ import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
 import { ConnectButton } from "./connect-button"
-import { Disclaimer } from "./disclaimer"
 import { TokenMark } from "./token-mark"
 import { TxFeedback } from "./tx-feedback"
 
@@ -76,10 +76,13 @@ function AmountField({
   )
 }
 
-function Line({ label, children }: { label: string; children: React.ReactNode }) {
+function Line({ label, info, children }: { label: string; info?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <dt className="text-muted-foreground">{label}</dt>
+      <dt className="flex items-center gap-0.5 text-muted-foreground">
+        {label}
+        {info}
+      </dt>
       <dd className="text-right font-semibold tabular-nums">{children}</dd>
     </div>
   )
@@ -138,7 +141,7 @@ export function PositionCard({ pool }: { pool: Pool }) {
                 <Line label={p.feesEarned}>
                   <span className="text-success">+{formatUsd(position.feesUsd, locale)}</span>
                 </Line>
-                <Line label={p.vsHold}>
+                <Line label={p.vsHold} info={<InfoTip label={p.vsHold} className="-my-1 size-7">{p.vsHoldHelp}</InfoTip>}>
                   <span className={cn(v.vsHold < -0.00005 ? "text-destructive" : "text-foreground")}>
                     {v.vsHold >= 0 ? "+" : ""}
                     {formatPercent(v.vsHold, locale)} ({v.valueUsd - v.holdUsd >= 0 ? "+" : "−"}
@@ -147,7 +150,6 @@ export function PositionCard({ pool }: { pool: Pool }) {
                 </Line>
                 <Line label={p.lp}>{formatNumber(position.lp, locale, 4)}</Line>
               </dl>
-              <p className="text-xs text-muted-foreground">{p.vsHoldHelp}</p>
             </div>
           ) : (
             <p className="mt-2 text-sm text-muted-foreground">{p.empty}</p>
@@ -183,7 +185,7 @@ export function PositionCard({ pool }: { pool: Pool }) {
 
 function AddLiquidity({ pool }: { pool: Pool }) {
   const demo = useDemo()
-  const { app, locale, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
   const a = app.pool.add
   const tx = useTx()
   const [valA, setValA] = useState("")
@@ -255,7 +257,6 @@ function AddLiquidity({ pool }: { pool: Pool }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-muted-foreground">{a.hint}</p>
       <AmountField
         symbol={pool.a}
         label={t(a.amount, { symbol: pool.a })}
@@ -283,7 +284,6 @@ function AddLiquidity({ pool }: { pool: Pool }) {
         {label}
       </Button>
       <TxFeedback state={tx.state} confirmedLabel={t(a.confirmed, { pair })} onRetry={submit} onDismiss={tx.reset} />
-      <Disclaimer text={disclaimer} />
     </div>
   )
 }
@@ -294,7 +294,7 @@ function AddLiquidity({ pool }: { pool: Pool }) {
 
 function RemoveLiquidity({ pool }: { pool: Pool }) {
   const demo = useDemo()
-  const { app, locale, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
   const r = app.pool.remove
   const tx = useTx()
   const [pct, setPct] = useState(50)
@@ -368,7 +368,6 @@ function RemoveLiquidity({ pool }: { pool: Pool }) {
         {tx.busy ? r.removing : r.button}
       </Button>
       <TxFeedback state={tx.state} confirmedLabel={done ?? undefined} onRetry={submit} onDismiss={tx.reset} />
-      <Disclaimer text={disclaimer} />
     </div>
   )
 }
@@ -379,7 +378,7 @@ function RemoveLiquidity({ pool }: { pool: Pool }) {
 
 export function CreatePool({ pairId, a, b }: { pairId: string; a: TokenSymbol; b: TokenSymbol }) {
   const demo = useDemo()
-  const { app, locale, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
   const c = app.pool.create
   const tx = useTx()
   const [valA, setValA] = useState("")
@@ -512,7 +511,6 @@ export function CreatePool({ pairId, a, b }: { pairId: string; a: TokenSymbol; b
             {label}
           </Button>
           <TxFeedback state={tx.state} onRetry={submit} onDismiss={tx.reset} />
-          <Disclaimer text={disclaimer} />
         </div>
       )}
     </section>

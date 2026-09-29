@@ -3,6 +3,7 @@
 import { ArrowRightIcon, PlusIcon } from "lucide-react"
 import Link from "next/link"
 
+import { InfoTip } from "@/components/ui/info-tip"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { feeApr, poolPrice, poolTvlUsd, viewPosition } from "@/lib/demo/amm"
@@ -40,10 +41,7 @@ export function PoolsView() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:py-10">
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-display">{p.title}</h1>
-        <p className="mt-1 max-w-prose text-sm text-muted-foreground">{p.intro}</p>
-      </div>
+      <h1 className="text-3xl font-extrabold tracking-display">{p.title}</h1>
 
       <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
@@ -118,7 +116,14 @@ export function PoolsView() {
                 <th scope="col" className="px-5 py-3 font-semibold">{p.pair}</th>
                 <th scope="col" className="px-5 py-3 text-right font-semibold">{p.tvl}</th>
                 <th scope="col" className="px-5 py-3 text-right font-semibold">{p.volume}</th>
-                <th scope="col" className="px-5 py-3 text-right font-semibold" title={p.aprHelp}>{p.apr}</th>
+                <th scope="col" className="px-5 py-3 text-right font-semibold">
+                  <span className="inline-flex items-center justify-end gap-0.5">
+                    {p.apr}
+                    <InfoTip label={p.apr} className="-my-1 size-7">
+                      {p.aprHelp}
+                    </InfoTip>
+                  </span>
+                </th>
                 <th scope="col" className="px-5 py-3 text-right font-semibold">{p.price}</th>
               </tr>
             </thead>
@@ -165,7 +170,6 @@ export function PoolsView() {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-muted-foreground">{p.aprHelp}</p>
       </section>
 
       {missing.length ? (

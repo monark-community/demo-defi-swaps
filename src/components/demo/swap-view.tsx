@@ -8,6 +8,7 @@ import { CurveChart } from "@/components/diagrams/curve-chart"
 import { ReserveBars } from "@/components/diagrams/reserve-bars"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
 import { SwapForm } from "@/components/ui/swap-form"
 import { TokenAmount } from "@/components/ui/token-amount"
@@ -26,7 +27,6 @@ import { formatPercent, formatPrice, formatRelative, formatToken } from "@/lib/f
 import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { ImpactBadge } from "./impact-badge"
 import { RouteLine } from "./route-line"
 import { TokenMark } from "./token-mark"
@@ -36,7 +36,7 @@ const SLIPPAGE_PRESETS = [10, 50, 100]
 
 export function SwapView() {
   const demo = useDemo()
-  const { app, locale, tokens: tokenNames, disclaimer } = useAppCopy()
+  const { app, locale, tokens: tokenNames } = useAppCopy()
   const s = app.swap
   const nf = intlLocale[locale]
 
@@ -247,10 +247,7 @@ export function SwapView() {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,27rem)_minmax(0,1fr)] lg:gap-8 lg:py-10">
       <div className="flex flex-col gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-display">{s.title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{s.intro}</p>
-        </div>
+        <h1 className="text-3xl font-extrabold tracking-display">{s.title}</h1>
         <SwapForm
           labels={{ title: s.title, pay: s.pay, receive: s.receive, reverse: s.reverse, settings: s.settings, token: s.token, max: s.max }}
           tokens={tokenOptions}
@@ -307,20 +304,19 @@ export function SwapView() {
                 onRetry={tx.state.error === "slippage" ? undefined : swap}
                 onDismiss={tx.reset}
               />
-              <Disclaimer text={disclaimer} />
             </div>
           }
         />
       </div>
 
-      <div className="flex flex-col gap-6 lg:pt-[4.5rem]">
+      <div className="flex flex-col gap-6 lg:pt-[3.25rem]">
         <section className="rounded-3xl border bg-card p-4 sm:p-6" aria-labelledby="curve-title">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
+            <div className="flex items-center gap-1">
               <h2 id="curve-title" className="text-lg font-extrabold">
                 {s.curve.title}
               </h2>
-              <p className="mt-0.5 max-w-prose text-sm text-muted-foreground">{s.curve.intro}</p>
+              <InfoTip label={s.curve.info}>{s.curve.intro}</InfoTip>
             </div>
             {quote && quote.hops.length > 1 ? (
               <div className="flex gap-1 rounded-full border p-1" role="group" aria-label={s.route}>
@@ -364,7 +360,7 @@ export function SwapView() {
           {!hasAmount && demo ? <p className="mt-3 text-sm text-muted-foreground">{s.curve.empty}</p> : null}
         </section>
 
-        <RecentSwaps />
+        {connected && demo?.activity.some((a) => a.kind === "swap") ? <RecentSwaps /> : null}
       </div>
     </div>
   )

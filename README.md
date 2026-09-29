@@ -75,7 +75,7 @@ src/
   components/diagrams/ curve chart, reserve bars, price chart
   components/home/     hero curve, "same trade, two pools"
   components/how/      curve explorer, route and LP diagrams
-  components/site/     Monark shell: header pairing, nav, EN/FR switch, theme toggle, footer
+  components/site/     Monark shell: brand, nav, Demo chip, EN/FR switch, theme toggle, footer
   i18n/                typed EN/FR dictionaries (French must match the English shape)
   lib/demo/            the simulated chain, wallet and AMM (see above)
   proxy.ts             redirects / to the visitor's language

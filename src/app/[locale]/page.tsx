@@ -3,11 +3,7 @@ import {
   ArrowUpDownIcon,
   DropletsIcon,
   GraduationCapIcon,
-  HistoryIcon,
   MegaphoneIcon,
-  ReceiptTextIcon,
-  ScaleIcon,
-  SplineIcon,
   TerminalIcon,
   VoteIcon,
 } from "lucide-react"
@@ -32,9 +28,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]">): Prom
   return pageMetadata(locale, "/", null, getDictionary(locale).meta.description)
 }
 
-const OUTCOME_ICONS = [ReceiptTextIcon, SplineIcon, ScaleIcon]
-const DEMO_ICONS = [ArrowUpDownIcon, DropletsIcon, VoteIcon, HistoryIcon]
-const DEMO_LINKS = ["/app", "/app/pools", "/app/pools/link-usdc", "/app/activity"]
+const DEMO_ICONS = [ArrowUpDownIcon, DropletsIcon, VoteIcon]
+const DEMO_LINKS = ["/app", "/app/pools/eth-usdc", "/app/pools/link-usdc"]
 const AUDIENCE_ICONS = [GraduationCapIcon, TerminalIcon, MegaphoneIcon]
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -60,8 +55,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-center lg:gap-14 lg:pt-20 lg:pb-24">
           <div>
-            <p className="eyebrow text-primary-ink">{h.eyebrow}</p>
-            <h1 id="hero-title" className="mt-4 text-[2.25rem] leading-[1.08] font-extrabold tracking-display sm:text-5xl lg:text-[3.6rem]">
+            <h1 id="hero-title" className="text-[2.25rem] leading-[1.08] font-extrabold tracking-display sm:text-5xl lg:text-[3.6rem]">
               {h.title}
             </h1>
             <p className="mt-5 max-w-[34rem] text-lg text-muted-foreground sm:text-xl">{h.sub}</p>
@@ -76,62 +70,18 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
                 <Link href={href(locale, "/how-it-works")}>{h.ctaSecondary}</Link>
               </Button>
             </div>
-            <p className="mt-6 text-xs text-muted-foreground">{dict.common.disclaimer}</p>
           </div>
           <HeroCurve locale={locale} labels={{ ...h.hero, levels }} />
         </div>
       </section>
 
-      {/* Outcomes */}
-      <section className="border-t bg-card/60" aria-labelledby="outcomes-title">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <div className="max-w-2xl">
-            <h2 id="outcomes-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-              {h.outcomes.title}
-            </h2>
-            <p className="mt-3 text-muted-foreground">{h.outcomes.intro}</p>
-          </div>
-          <ul className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
-            {h.outcomes.items.map((item, i) => {
-              const Icon = OUTCOME_ICONS[i] ?? ReceiptTextIcon
-              return (
-                <li key={item.title}>
-                  <Icon className="size-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
-                  <h3 className="mt-4 text-xl font-bold">{item.title}</h3>
-                  <p className="mt-2 text-muted-foreground">{item.body}</p>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </section>
-
-      {/* Same trade, two pools */}
-      <section className="border-t" aria-labelledby="pools-title">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-14 lg:py-20">
-          <div>
-            <p className="eyebrow text-primary-ink">{h.twoPools.eyebrow}</p>
-            <h2 id="pools-title" className="mt-3 text-3xl font-bold tracking-display sm:text-[2rem]">
-              {h.twoPools.title}
-            </h2>
-            <p className="mt-3 max-w-md text-muted-foreground">{h.twoPools.body}</p>
-          </div>
-          <TwoPools locale={locale} labels={{ ...h.twoPools, levels }} />
-        </div>
-      </section>
-
-      <SectionDivider />
-
       {/* What you can do */}
-      <section aria-labelledby="demo-title">
+      <section className="border-t bg-card/60" aria-labelledby="demo-title">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <div className="max-w-2xl">
-            <h2 id="demo-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-              {h.demo.title}
-            </h2>
-            <p className="mt-3 text-muted-foreground">{h.demo.intro}</p>
-          </div>
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          <h2 id="demo-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
+            {h.demo.title}
+          </h2>
+          <ul className="mt-10 grid gap-4 md:grid-cols-3">
             {h.demo.items.map((item, i) => {
               const Icon = DEMO_ICONS[i] ?? ArrowUpDownIcon
               return (
@@ -143,15 +93,25 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
                     <Icon className="size-6 text-primary" strokeWidth={1.75} aria-hidden="true" />
                     <h3 className="mt-4 text-lg font-bold">{item.title}</h3>
                     <p className="mt-1.5 flex-1 text-muted-foreground">{item.body}</p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-primary-ink underline-offset-4 group-hover:underline">
-                      {item.cta}
-                      <ArrowRightIcon className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
-                    </span>
+                    <ArrowRightIcon className="mt-4 size-5 text-primary-ink transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
                   </Link>
                 </li>
               )
             })}
           </ul>
+        </div>
+      </section>
+
+      {/* Same trade, two pools */}
+      <section className="border-t" aria-labelledby="pools-title">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-14 lg:py-20">
+          <div>
+            <h2 id="pools-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
+              {h.twoPools.title}
+            </h2>
+            <p className="mt-3 max-w-md text-muted-foreground">{h.twoPools.body}</p>
+          </div>
+          <TwoPools locale={locale} labels={{ ...h.twoPools, levels }} />
         </div>
       </section>
 
@@ -169,11 +129,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             />
           </div>
           <div>
-            <p className="eyebrow text-primary-ink">{h.who.eyebrow}</p>
-            <h2 id="who-title" className="mt-3 text-3xl font-bold tracking-display sm:text-[2rem]">
+            <h2 id="who-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
               {h.who.title}
             </h2>
-            <p className="mt-4 text-muted-foreground">{h.who.body}</p>
             <ul className="mt-8 flex flex-col gap-5">
               {h.who.audiences.map((a, i) => {
                 const Icon = AUDIENCE_ICONS[i] ?? GraduationCapIcon
@@ -224,12 +182,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       {/* Closing */}
       <section aria-labelledby="closing-title">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between lg:py-20">
-          <div>
-            <h2 id="closing-title" className="text-3xl font-extrabold tracking-display sm:text-4xl">
-              {h.closing.title}
-            </h2>
-            <p className="mt-2 text-lg text-muted-foreground">{h.closing.body}</p>
-          </div>
+          <h2 id="closing-title" className="text-3xl font-extrabold tracking-display sm:text-4xl">
+            {h.closing.title}
+          </h2>
           <Button asChild size="lg">
             <Link href={href(locale, "/app")}>
               {h.closing.cta}

@@ -1,4 +1,4 @@
-import { ArrowRightIcon, CheckIcon, ExternalLinkIcon } from "lucide-react"
+import { ArrowRightIcon, CheckIcon, ChevronDownIcon, ExternalLinkIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -37,38 +37,14 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
   const holdValue = priceAfter + 3200
   const il = poolValue / holdValue - 1
 
-  const toc = [
-    { id: "rule", label: h.rule.title },
-    { id: "impact", label: h.impact.title },
-    { id: "lp", label: h.lp.title },
-    { id: "routes", label: h.routes.title },
-    { id: "votes", label: h.votes.title },
-    { id: "dev", label: h.dev.title },
-  ]
-
   return (
     <>
       <section className="border-b" aria-labelledby="how-title">
         <div className="mx-auto max-w-6xl px-4 pt-12 pb-10 sm:px-6 lg:pt-16">
-          <p className="eyebrow text-primary-ink">{h.eyebrow}</p>
-          <h1 id="how-title" className="mt-3 max-w-3xl text-4xl font-extrabold tracking-display sm:text-5xl">
+          <h1 id="how-title" className="max-w-3xl text-4xl font-extrabold tracking-display sm:text-5xl">
             {h.title}
           </h1>
           <p className="mt-4 max-w-[62ch] text-lg text-muted-foreground">{h.intro}</p>
-          <nav aria-label={h.toc} className="mt-8">
-            <ul className="flex flex-wrap gap-2">
-              {toc.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={`#${item.id}`}
-                    className="inline-flex h-10 items-center rounded-full border px-4 text-sm font-semibold transition-colors hover:bg-muted"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </section>
 
@@ -142,11 +118,10 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
           <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
             <div>
               <h3 className="text-xl font-bold">{h.lp.ilTitle}</h3>
-              <p className="mt-3 text-muted-foreground">{h.lp.ilBody}</p>
+              <p className="mt-2 text-muted-foreground">{h.lp.ilBody}</p>
             </div>
             <dl className="divide-y rounded-3xl border bg-card text-sm">
               {[
-                { label: h.lp.ilRows.deposit, value: `${formatToken(1, "tETH", locale)} + ${formatToken(3200, "tUSDC", locale, 0)}`, usd: formatUsd(6400, locale) },
                 { label: h.lp.ilRows.pool, value: `${formatToken(shareEth, "tETH", locale, 3)} + ${formatToken(shareUsdc, "tUSDC", locale, 0)}`, usd: formatUsd(poolValue, locale) },
                 { label: h.lp.ilRows.hold, value: `${formatToken(1, "tETH", locale)} + ${formatToken(3200, "tUSDC", locale, 0)}`, usd: formatUsd(holdValue, locale) },
               ].map((row) => (
@@ -169,28 +144,28 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
         </div>
       </section>
 
-      <SectionDivider />
-
       {/* 4. Routes + 5. Votes */}
-      <section className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-14 sm:px-6 lg:py-16">
-        <div id="routes" className="scroll-mt-24">
-          <h2 className="text-3xl font-bold tracking-display">{h.routes.title}</h2>
-          <p className="mt-3 max-w-2xl text-muted-foreground">{h.routes.body}</p>
-          <div className="mt-6">
-            <RouteDiagram label={h.routes.label} fee={formatPercent(0.003, locale)} />
+      <section className="border-t">
+        <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-14 sm:px-6 lg:py-16">
+          <div id="routes" className="scroll-mt-24">
+            <h2 className="text-3xl font-bold tracking-display">{h.routes.title}</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">{h.routes.body}</p>
+            <div className="mt-6">
+              <RouteDiagram label={h.routes.label} fee={formatPercent(0.003, locale)} />
+            </div>
           </div>
-        </div>
-        <div id="votes" className="scroll-mt-24 max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-display">{h.votes.title}</h2>
-          <p className="mt-3 text-muted-foreground">{h.votes.body}</p>
-          <p className="mt-4 rounded-2xl border bg-card p-4 text-sm">{h.votes.tiers}</p>
-          <Link
-            href={href(locale, "/app/pools/link-usdc")}
-            className="mt-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-bold text-primary-ink underline underline-offset-4"
-          >
-            {dict.home.demo.items[2]?.cta}
-            <ArrowRightIcon className="size-4" aria-hidden="true" />
-          </Link>
+          <div id="votes" className="scroll-mt-24 max-w-2xl">
+            <h2 className="text-3xl font-bold tracking-display">{h.votes.title}</h2>
+            <p className="mt-3 text-muted-foreground">{h.votes.body}</p>
+            <p className="mt-4 rounded-2xl border bg-card p-4 text-sm">{h.votes.tiers}</p>
+            <Link
+              href={href(locale, "/app/pools/link-usdc")}
+              className="mt-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-bold text-primary-ink underline underline-offset-4"
+            >
+              {dict.home.demo.items[2]?.cta}
+              <ArrowRightIcon className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -218,27 +193,33 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
             </h2>
             <p className="mt-3 text-muted-foreground">{h.dev.body}</p>
           </div>
-          <div className="mt-8 overflow-hidden rounded-3xl border bg-card">
-            <table className="w-full text-left text-sm">
-              <thead className="hidden sm:table-header-group">
-                <tr className="border-b text-muted-foreground">
-                  <th scope="col" className="px-5 py-3 font-semibold">{h.dev.head.action}</th>
-                  <th scope="col" className="px-5 py-3 font-semibold">{h.dev.head.call}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {h.dev.rows.map((row) => (
-                  <tr key={row.action} className="flex flex-col sm:table-row">
-                    <th scope="row" className="px-5 pt-3.5 font-bold sm:py-3.5">{row.action}</th>
-                    <td className="px-5 pt-1 pb-3.5 sm:py-3.5">
-                      <code className="font-mono text-xs break-all text-foreground">{row.call}</code>
-                    </td>
+          <details className="group mt-6">
+            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border px-4 text-sm font-bold transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
+              <ChevronDownIcon className="size-4 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+              {h.dev.show}
+            </summary>
+            <div className="mt-4 overflow-hidden rounded-3xl border bg-card">
+              <table className="w-full text-left text-sm">
+                <thead className="hidden sm:table-header-group">
+                  <tr className="border-b text-muted-foreground">
+                    <th scope="col" className="px-5 py-3 font-semibold">{h.dev.head.action}</th>
+                    <th scope="col" className="px-5 py-3 font-semibold">{h.dev.head.call}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-4 max-w-[68ch] text-sm text-muted-foreground">{h.dev.approvals}</p>
+                </thead>
+                <tbody className="divide-y">
+                  {h.dev.rows.map((row) => (
+                    <tr key={row.action} className="flex flex-col sm:table-row">
+                      <th scope="row" className="px-5 pt-3.5 font-bold sm:py-3.5">{row.action}</th>
+                      <td className="px-5 pt-1 pb-3.5 sm:py-3.5">
+                        <code className="font-mono text-xs break-all text-foreground">{row.call}</code>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 max-w-[68ch] text-sm text-muted-foreground">{h.dev.approvals}</p>
+          </details>
           <a href={REPO_URL} className="mt-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-bold text-primary-ink underline underline-offset-4">
             {h.dev.source}
             <ExternalLinkIcon className="size-3.5" aria-hidden="true" />
@@ -250,12 +231,9 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
 
       <section aria-labelledby="how-cta-title">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-14 sm:px-6 md:flex-row md:items-center md:justify-between lg:py-16">
-          <div>
-            <h2 id="how-cta-title" className="text-3xl font-extrabold tracking-display">
-              {h.cta.title}
-            </h2>
-            <p className="mt-2 text-muted-foreground">{h.cta.body}</p>
-          </div>
+          <h2 id="how-cta-title" className="text-3xl font-extrabold tracking-display">
+            {h.cta.title}
+          </h2>
           <Button asChild size="lg">
             <Link href={href(locale, "/app")}>
               {h.cta.button}

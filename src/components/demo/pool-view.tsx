@@ -164,7 +164,7 @@ function TradesFeed({ pool }: { pool: Pool }) {
   const demo = useDemo()
   const { app, locale } = useAppCopy()
   const tr = app.pool.trades
-  const trades = pool.trades.slice(0, 8)
+  const trades = pool.trades.slice(0, 5)
   const live = demo?.settings.liveMarket
   return (
     <section className="rounded-3xl border bg-card p-5 sm:p-6" aria-labelledby="trades-title">
@@ -190,14 +190,8 @@ function TradesFeed({ pool }: { pool: Pool }) {
                 <span className="font-semibold">{formatAmount(x.amountOut, x.tokenOut, locale)} {x.tokenOut}</span>
               </span>
               <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                {x.you ? (
-                  <span className="rounded-full bg-primary px-2 py-0.5 font-bold text-primary-foreground">{tr.you}</span>
-                ) : (
-                  <span className="hidden font-mono sm:inline" title={x.trader}>
-                    {shortAddress(x.trader)}
-                  </span>
-                )}
-                <span>{formatRelative(x.at, locale)}</span>
+                {x.you ? <span className="rounded-full bg-primary px-2 py-0.5 font-bold text-primary-foreground">{tr.you}</span> : null}
+                <span title={x.you ? undefined : shortAddress(x.trader)}>{formatRelative(x.at, locale)}</span>
               </span>
             </li>
           ))}

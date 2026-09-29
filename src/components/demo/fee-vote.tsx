@@ -3,6 +3,7 @@
 import { CheckCircle2Icon, GavelIcon, ThumbsDownIcon, ThumbsUpIcon, XCircleIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { InfoTip } from "@/components/ui/info-tip"
 import { useTween } from "@/hooks/use-tween"
 import { t } from "@/i18n/t"
 import { useTx } from "@/lib/demo/chain"
@@ -13,13 +14,12 @@ import { formatDateTime, formatPercent } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { TxFeedback } from "./tx-feedback"
 
 /** LP-weighted fee vote: the tally bar reflows as your weight lands, then the result is stamped. */
 export function FeeVote({ pool }: { pool: Pool }) {
   const demo = useDemo()
-  const { app, locale, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
   const v = app.pool.vote
   const tx = useTx()
   const proposal = pool.proposal
@@ -60,8 +60,10 @@ export function FeeVote({ pool }: { pool: Pool }) {
           {v.title}
         </h2>
       </div>
-      <p className="mt-3 text-base font-bold">{t(v.proposal, { from: fee(proposal.fromFee), to: fee(proposal.newFee) })}</p>
-      <p className="mt-1 text-sm text-muted-foreground">{v.why}</p>
+      <p className="mt-3 flex items-center gap-1 text-base font-bold">
+        {t(v.proposal, { from: fee(proposal.fromFee), to: fee(proposal.newFee) })}
+        <InfoTip label={v.whyLabel}>{v.why}</InfoTip>
+      </p>
       {open ? <p className="mt-2 text-xs text-muted-foreground">{t(v.ends, { when: formatDateTime(proposal.endsAt, locale) })}</p> : null}
 
       {/* Tally */}
@@ -131,7 +133,6 @@ export function FeeVote({ pool }: { pool: Pool }) {
           >
             {v.end}
           </Button>
-          <p className="text-xs text-muted-foreground">{v.endHint}</p>
         </div>
       ) : (
         <div className="mt-5 flex flex-col gap-3">
@@ -150,7 +151,6 @@ export function FeeVote({ pool }: { pool: Pool }) {
             </Button>
           </div>
           <TxFeedback state={tx.state} onDismiss={tx.reset} />
-          <Disclaimer text={disclaimer} />
         </div>
       )}
     </section>

@@ -29,7 +29,6 @@ export interface TwoPoolsLabels {
   impact: string
   receive: string
   worth: string
-  note: string
   sliderLabel: string
   levels: { low: string; noticeable: string; high: string }
 }
@@ -110,7 +109,6 @@ export function TwoPools({ labels, locale }: { labels: TwoPoolsLabels; locale: L
           )
         })}
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">{labels.note}</p>
     </div>
   )
 }
