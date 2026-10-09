@@ -1,9 +1,8 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { createContext, useContext, useEffect, type ReactNode } from "react"
-import { Toaster } from "sonner"
 
+import { Toaster } from "@/components/ui/sonner"
 import type { Dictionary } from "@/i18n"
 import type { Locale } from "@/i18n/config"
 import { marketTick } from "@/lib/demo/ops"
@@ -45,7 +44,6 @@ function useLiveMarket() {
 }
 
 export function AppProvider({ value, children }: { value: AppCopy; children: ReactNode }) {
-  const { resolvedTheme } = useTheme()
   useEffect(() => {
     initDemo()
   }, [])
@@ -56,7 +54,6 @@ export function AppProvider({ value, children }: { value: AppCopy; children: Rea
       {children}
       <WalletPrompt />
       <Toaster
-        theme={resolvedTheme === "dark" ? "dark" : "light"}
         // Every transaction reports inline, next to the button that started it;
         // toasts are only for results whose panel goes away (pool created,
         // position closed, demo reset). Bottom-left keeps them off the right-hand
@@ -65,13 +62,6 @@ export function AppProvider({ value, children }: { value: AppCopy; children: Rea
         offset={{ bottom: 24, left: 24 }}
         mobileOffset={{ bottom: 16, left: 16, right: 16 }}
         closeButton
-        toastOptions={{
-          closeButton: true,
-          classNames: {
-            toast: "!rounded-2xl !border !border-border !bg-popover !text-popover-foreground !font-sans !shadow-md",
-            description: "!text-muted-foreground",
-          },
-        }}
       />
     </AppContext.Provider>
   )
