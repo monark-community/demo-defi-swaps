@@ -6,10 +6,12 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { InfoTip } from "@/components/ui/info-tip"
-import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem, RadioGroupItemDescription, RadioGroupItemTitle } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { Stat, StatGroup, StatLabel, StatValue } from "@/components/ui/stat"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { TokenAmount } from "@/components/ui/token-amount"
 import { intlLocale } from "@/i18n/config"
 import { t } from "@/i18n/t"
@@ -46,12 +48,18 @@ function AmountField({
 }) {
   const id = useId()
   return (
-    <div className={cn("rounded-2xl border bg-background px-4 py-3 focus-within:border-input", invalid && "border-destructive/60")}>
-      <Label htmlFor={id} className="text-xs font-bold text-muted-foreground">
+    // The amount input is borderless, so the whole panel shows the focus ring (as in @monark/ui swap-form).
+    <div
+      className={cn(
+        "rounded-2xl border bg-background px-4 py-3 transition-[color,box-shadow] has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50",
+        invalid && "border-destructive/60"
+      )}
+    >
+      <Label htmlFor={id} className="text-xs text-muted-foreground">
         {label}
       </Label>
       <div className="mt-1 flex items-center gap-2">
-        <Input
+        <input
           id={id}
           inputMode="decimal"
           autoComplete="off"
@@ -60,7 +68,7 @@ function AmountField({
           aria-invalid={invalid || undefined}
           aria-describedby={balance ? `${id}-bal` : undefined}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-2xl font-bold tabular-nums focus-visible:outline-none"
+          className="h-10 w-full min-w-0 flex-1 bg-transparent text-2xl font-bold tabular-nums outline-none placeholder:text-muted-foreground"
         />
         <span className="inline-flex shrink-0 items-center gap-1.5 font-bold">
           <TokenMark symbol={symbol} size={22} />
@@ -117,16 +125,16 @@ export function PositionCard({ pool }: { pool: Pool }) {
         <>
           {position && v ? (
             <div className="mt-4 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground">{p.value}</p>
-                  <p className="text-2xl font-extrabold tabular-nums">{formatUsd(v.valueUsd, locale)}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground">{p.share}</p>
-                  <p className="text-2xl font-extrabold tabular-nums">{formatPercent(v.share, locale)}</p>
-                </div>
-              </div>
+              <StatGroup className="grid-cols-2 gap-4 lg:grid-cols-2">
+                <Stat variant="plain">
+                  <StatLabel>{p.value}</StatLabel>
+                  <StatValue>{formatUsd(v.valueUsd, locale)}</StatValue>
+                </Stat>
+                <Stat variant="plain">
+                  <StatLabel>{p.share}</StatLabel>
+                  <StatValue>{formatPercent(v.share, locale)}</StatValue>
+                </Stat>
+              </StatGroup>
               {/* Your share of the pool as a slice of the reserves */}
               <div className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
                 <div className="h-full rounded-full bg-primary" style={{ width: `${Math.max(1, v.share * 100)}%` }} />
@@ -347,13 +355,22 @@ function RemoveLiquidity({ pool }: { pool: Pool }) {
         valueText={() => formatPercent(fraction, locale, 0)}
         disabled={tx.busy}
       />
-      <div className="grid grid-cols-4 gap-2">
+      <ToggleGroup
+        type="single"
+        variant="chip"
+        size="sm"
+        value={String(pct)}
+        onValueChange={(v) => v && setPct(Number(v))}
+        disabled={tx.busy}
+        aria-label={r.percent}
+        className="grid w-full grid-cols-4"
+      >
         {[25, 50, 75, 100].map((x) => (
-          <Button key={x} type="button" size="sm" variant={pct === x ? "default" : "outline"} aria-pressed={pct === x} onClick={() => setPct(x)} disabled={tx.busy}>
+          <ToggleGroupItem key={x} value={String(x)}>
             {formatPercent(x / 100, locale, 0)}
-          </Button>
+          </ToggleGroupItem>
         ))}
-      </div>
+      </ToggleGroup>
       <dl className="flex flex-col gap-2 rounded-2xl border px-4 py-3 text-sm">
         <Line label={r.receive}>
           <span className="flex flex-col items-end">
@@ -488,24 +505,25 @@ export function CreatePool({ pairId, a, b }: { pairId: string; a: TokenSymbol; b
             </p>
           ) : null}
 
-          <fieldset className="mt-1">
-            <legend className="text-sm font-bold">{c.fee}</legend>
-            <div className="mt-2 grid grid-cols-3 gap-2">
+          <div className="mt-1">
+            <p id={`${pairId}-fee-label`} className="text-sm font-bold">
+              {c.fee}
+            </p>
+            <RadioGroup
+              variant="card"
+              value={String(fee)}
+              onValueChange={(v) => setFee(Number(v))}
+              aria-labelledby={`${pairId}-fee-label`}
+              className="mt-2 sm:grid-cols-3"
+            >
               {FEE_TIERS.map((tier) => (
-                <label
-                  key={tier}
-                  className={cn(
-                    "flex cursor-pointer flex-col items-center rounded-2xl border px-2 py-2.5 text-center transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring",
-                    fee === tier ? "border-primary bg-secondary" : "hover:bg-muted"
-                  )}
-                >
-                  <input type="radio" name="fee" value={tier} checked={fee === tier} onChange={() => setFee(tier)} className="sr-only" />
-                  <span className="font-bold tabular-nums">{formatPercent(tier, locale)}</span>
-                  <span className="text-xs text-muted-foreground">{c.feeHints[String(tier) as keyof typeof c.feeHints]}</span>
-                </label>
+                <RadioGroupItem key={tier} value={String(tier)}>
+                  <RadioGroupItemTitle className="tabular-nums">{formatPercent(tier, locale)}</RadioGroupItemTitle>
+                  <RadioGroupItemDescription>{c.feeHints[String(tier) as keyof typeof c.feeHints]}</RadioGroupItemDescription>
+                </RadioGroupItem>
               ))}
-            </div>
-          </fieldset>
+            </RadioGroup>
+          </div>
 
           <Button size="lg" className="mt-2 w-full" disabled={disabled} onClick={submit}>
             {label}

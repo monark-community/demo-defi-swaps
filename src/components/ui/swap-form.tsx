@@ -1,16 +1,16 @@
 "use client"
 
-// From the @monark/ui registry (swap-form), extended for Fluidswap:
-// localizable labels, balances with a Max action, a settings panel slot,
-// custom quote details and a footer slot. Pills and rounded fields per the
-// Monark 2026 look.
+// Fork of the @monark/ui 2 swap-form block, extended for Fluidswap: balances
+// with a Max action, an invalid state, an inline settings panel, custom quote
+// details, a slot above the button and a footer slot. The registry block has
+// none of these yet, so the fork stays; its look follows the 2.x block.
 
 import * as React from "react"
-import { ArrowDownIcon, SettingsIcon } from "lucide-react"
+import { ArrowDownIcon, Loader2Icon, SettingsIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { FieldError } from "@/components/ui/field-error"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -126,12 +126,12 @@ function SwapForm({
         <Button
           type="button"
           variant="ghost"
-          size="icon"
+          size="icon-sm"
           onClick={onOpenSettings}
           aria-label={labels.settings}
           aria-expanded={settingsOpen}
         >
-          <SettingsIcon className="size-[18px]" />
+          <SettingsIcon />
         </Button>
       </header>
 
@@ -157,16 +157,17 @@ function SwapForm({
         }
       />
 
-      <div className="relative -my-4 flex justify-center">
+      {/* Overlaps both fields, as the reverse button does in most swap UIs. */}
+      <div className="relative z-10 -my-6 flex justify-center">
         <Button
           type="button"
           variant="outline"
-          size="icon"
-          className="z-10 size-10 rounded-full bg-card"
+          size="icon-sm"
+          className="bg-card"
           onClick={onReverse}
           aria-label={labels.reverse}
         >
-          <ArrowDownIcon className="size-4" />
+          <ArrowDownIcon />
         </Button>
       </div>
 
@@ -186,15 +187,19 @@ function SwapForm({
 
       {beforeButton}
 
-      <Button type="submit" size="lg" disabled={isDisabled} data-status={status} className="w-full">
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full"
+        disabled={isDisabled}
+        aria-busy={isBusy || undefined}
+        data-status={status}
+      >
+        {isBusy && <Loader2Icon className="animate-spin" aria-hidden="true" />}
         {swapLabel ?? labels.title}
       </Button>
 
-      {status === "error" && errorMessage && (
-        <p role="alert" className="text-sm text-destructive">
-          {errorMessage}
-        </p>
-      )}
+      {status === "error" && errorMessage && <FieldError>{errorMessage}</FieldError>}
 
       {footer}
     </form>
@@ -233,20 +238,22 @@ function TokenField({
   const hintId = `swap-${side}-hint`
 
   return (
+    // The amount input is borderless, so the whole panel shows the focus ring.
     <div
+      data-slot="swap-form-field"
       className={cn(
-        "flex flex-col gap-1.5 rounded-2xl border bg-background px-4 py-3 transition-colors focus-within:border-input",
-        invalid && "border-destructive/60 focus-within:border-destructive"
+        "flex flex-col gap-1.5 rounded-2xl border bg-background p-4 transition-[color,box-shadow] has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50",
+        invalid && "border-destructive/60"
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <Label htmlFor={inputId} className="text-xs font-bold text-muted-foreground">
+        <Label htmlFor={inputId} className="text-xs text-muted-foreground">
           {label}
         </Label>
         {action}
       </div>
-      <div className="flex items-center gap-2">
-        <Input
+      <div className="flex items-center gap-3">
+        <input
           id={inputId}
           inputMode="decimal"
           autoComplete="off"
@@ -256,13 +263,15 @@ function TokenField({
           aria-invalid={invalid || undefined}
           aria-describedby={hint ? hintId : undefined}
           onChange={(e) => onAmountChange?.(e.target.value)}
-          className={cn(
-            "h-12 min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-[1.75rem] font-bold tabular-nums shadow-none focus-visible:outline-none",
-            readOnly && "text-foreground"
-          )}
+          className="w-full min-w-0 bg-transparent text-2xl font-extrabold tabular-nums outline-none placeholder:text-muted-foreground"
         />
         <Select value={token} onValueChange={onTokenChange}>
-          <SelectTrigger id={selectId} aria-label={`${label}: ${tokenLabel}`} className="h-11 w-auto min-w-[7.5rem] shrink-0 [&_.token-name]:hidden">
+          <SelectTrigger
+            id={selectId}
+            size="sm"
+            aria-label={`${label}: ${tokenLabel}`}
+            className="w-auto min-w-28 shrink-0 [&_.token-name]:hidden"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

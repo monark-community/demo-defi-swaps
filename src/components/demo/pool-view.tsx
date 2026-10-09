@@ -7,6 +7,7 @@ import { useState } from "react"
 import { PriceChart } from "@/components/diagrams/price-chart"
 import { ReserveBars } from "@/components/diagrams/reserve-bars"
 import { NetworkBadge } from "@/components/ui/network-badge"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { WalletAddress, WalletCopyButton } from "@/components/ui/wallet"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
@@ -136,22 +137,20 @@ function PriceCard({ pool }: { pool: Pool }) {
             {t(c.change, { pct: `${change >= 0 ? "+" : ""}${formatPercent(change, locale)}` })}
           </p>
         </div>
-        <div className="flex gap-1 rounded-full border p-1" role="group" aria-label={c.rangeLabel}>
+        <ToggleGroup
+          type="single"
+          variant="pill"
+          size="sm"
+          value={String(range)}
+          onValueChange={(v) => v && setRange(v === "30" ? 30 : 7)}
+          aria-label={c.rangeLabel}
+        >
           {([7, 30] as const).map((r) => (
-            <button
-              key={r}
-              type="button"
-              aria-pressed={range === r}
-              onClick={() => setRange(r)}
-              className={cn(
-                "inline-flex h-9 min-w-12 items-center justify-center rounded-full px-3 text-xs font-bold transition-colors",
-                range === r ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
+            <ToggleGroupItem key={r} value={String(r)} className="min-w-12">
               {r === 7 ? c.range7 : c.range30}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
       </div>
       <div className="mt-3">
         <PriceChart points={shown} locale={locale} label={t(c.label, { a: pool.a, b: pool.b })} unit={`${pool.b} / ${pool.a}`} />

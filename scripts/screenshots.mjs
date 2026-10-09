@@ -194,7 +194,7 @@ async function appFlows(page, v) {
 
   // Flow 4: withdraw
   await page.getByRole("tab", { name: "Remove" }).click()
-  await page.getByRole("button", { name: "50%", exact: true }).click().catch(() => {})
+  await page.getByRole("radio", { name: "50%", exact: true }).click().catch(() => {})
   await page.getByRole("tab", { name: "Remove" }).scrollIntoViewIfNeeded()
   await shot(page, v, "flow4-remove")
   await page.getByRole("button", { name: "Remove liquidity" }).click()
@@ -238,7 +238,7 @@ async function appFlows(page, v) {
   await page.goto(`${BASE}/${v.locale}/app/activity`, { waitUntil: "networkidle" })
   await page.getByRole("heading", { level: 1 }).waitFor()
   await shot(page, v, "app-03-activity", true)
-  await page.getByRole("button", { name: "Failed", exact: true }).click()
+  await page.getByRole("radio", { name: "Failed", exact: true }).click()
   await shot(page, v, "app-03-activity-failed")
 
   // Demo controls

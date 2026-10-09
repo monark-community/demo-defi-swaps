@@ -6,11 +6,11 @@ import { useMemo, useState, type ReactNode } from "react"
 
 import { CurveChart } from "@/components/diagrams/curve-chart"
 import { ReserveBars } from "@/components/diagrams/reserve-bars"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { SwapForm } from "@/components/ui/swap-form"
 import { TokenAmount } from "@/components/ui/token-amount"
 import { TxStatus } from "@/components/ui/tx-status"
@@ -218,19 +218,21 @@ export function SwapView() {
         {s.slippageTitle}
       </p>
       <p className="mt-0.5 text-xs text-muted-foreground">{s.slippageBody}</p>
-      <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-labelledby="slippage-title">
-        {SLIPPAGE_PRESETS.map((bps) => (
-          <Button
-            key={bps}
-            type="button"
-            size="sm"
-            variant={slippageBps === bps ? "default" : "outline"}
-            aria-pressed={slippageBps === bps}
-            onClick={() => setSettings({ slippageBps: bps })}
-          >
-            {formatPercent(bps / 10_000, locale)}
-          </Button>
-        ))}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <ToggleGroup
+          type="single"
+          variant="chip"
+          size="sm"
+          value={SLIPPAGE_PRESETS.includes(slippageBps) ? String(slippageBps) : ""}
+          onValueChange={(v) => v && setSettings({ slippageBps: Number(v) })}
+          aria-labelledby="slippage-title"
+        >
+          {SLIPPAGE_PRESETS.map((bps) => (
+            <ToggleGroupItem key={bps} value={String(bps)}>
+              {formatPercent(bps / 10_000, locale)}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
         <CustomSlippage
           key={slippageBps}
           bps={slippageBps}
@@ -320,22 +322,20 @@ export function SwapView() {
               <InfoTip label={s.curve.info}>{s.curve.intro}</InfoTip>
             </div>
             {quote && quote.hops.length > 1 ? (
-              <div className="flex gap-1 rounded-full border p-1" role="group" aria-label={s.route}>
+              <ToggleGroup
+                type="single"
+                variant="pill"
+                size="sm"
+                value={String(hopIndex)}
+                onValueChange={(v) => v && setHopIndex(Number(v))}
+                aria-label={s.route}
+              >
                 {quote.hops.map((h, i) => (
-                  <button
-                    key={h.poolId}
-                    type="button"
-                    aria-pressed={i === hopIndex}
-                    onClick={() => setHopIndex(i)}
-                    className={cn(
-                      "inline-flex h-9 items-center rounded-full px-3 text-xs font-bold transition-colors",
-                      i === hopIndex ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
+                  <ToggleGroupItem key={h.poolId} value={String(i)}>
                     {t(s.curve.hop, { n: i + 1, total: quote.hops.length })}
-                  </button>
+                  </ToggleGroupItem>
                 ))}
-              </div>
+              </ToggleGroup>
             ) : null}
           </div>
 

@@ -5,12 +5,12 @@ import { useState } from "react"
 import { ImpactBadge } from "@/components/demo/impact-badge"
 import { CurveChart } from "@/components/diagrams/curve-chart"
 import { Slider } from "@/components/ui/slider"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useTween } from "@/hooks/use-tween"
 import type { Locale } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { impactLevel } from "@/lib/demo/amm"
 import { formatAmount, formatPercent, formatPrice } from "@/lib/format"
-import { cn } from "@/lib/utils"
 
 const DEPTHS = {
   deep: { x: 420, y: 1_344_000 },
@@ -83,22 +83,20 @@ export function CurveExplorer({ labels, locale }: { labels: ExplorerLabels; loca
             <p className="text-sm font-bold" id="depth-label">
               {labels.depth}
             </p>
-            <div className="mt-2 inline-flex gap-1 rounded-full border p-1" role="group" aria-labelledby="depth-label">
+            <ToggleGroup
+              type="single"
+              variant="pill"
+              value={depth}
+              onValueChange={(v) => v && setDepth(v as "deep" | "thin")}
+              aria-labelledby="depth-label"
+              className="mt-2"
+            >
               {(["deep", "thin"] as const).map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  aria-pressed={depth === d}
-                  onClick={() => setDepth(d)}
-                  className={cn(
-                    "inline-flex h-9 items-center rounded-full px-4 text-sm font-bold transition-colors",
-                    depth === d ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
+                <ToggleGroupItem key={d} value={d}>
                   {labels[d]} · {formatAmount(DEPTHS[d].x, "tETH", locale, 0)} tETH
-                </button>
+                </ToggleGroupItem>
               ))}
-            </div>
+            </ToggleGroup>
           </div>
           <dl className="flex flex-col gap-2.5 rounded-2xl border px-4 py-3 text-sm" aria-live="polite">
             <div className="flex justify-between gap-3">

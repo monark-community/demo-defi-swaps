@@ -14,6 +14,7 @@ import { notFound } from "next/navigation"
 
 import { HeroCurve } from "@/components/home/hero-curve"
 import { TwoPools } from "@/components/home/two-pools"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale } from "@/i18n/config"
@@ -158,22 +159,14 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
           <h2 id="faq-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
             {h.faq.title}
           </h2>
-          <div className="mt-8 divide-y rounded-3xl border bg-card">
+          <Accordion type="multiple" variant="plus" className="mt-8 rounded-3xl border bg-card px-5 sm:px-6">
             {h.faq.items.map((item) => (
-              <details key={item.q} className="group px-5 sm:px-6">
-                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-bold [&::-webkit-details-marker]:hidden">
-                  {item.q}
-                  <span
-                    aria-hidden="true"
-                    className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border text-lg leading-none transition-transform duration-200 group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-[68ch] pb-5 text-muted-foreground">{item.a}</p>
-              </details>
+              <AccordionItem key={item.q} value={item.q}>
+                <AccordionTrigger>{item.q}</AccordionTrigger>
+                <AccordionContent>{item.a}</AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
 

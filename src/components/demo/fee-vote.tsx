@@ -3,6 +3,7 @@
 import { CheckCircle2Icon, GavelIcon, ThumbsDownIcon, ThumbsUpIcon, XCircleIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription } from "@/components/ui/empty"
 import { InfoTip } from "@/components/ui/info-tip"
 import { useTween } from "@/hooks/use-tween"
 import { t } from "@/i18n/t"
@@ -119,7 +120,9 @@ export function FeeVote({ pool }: { pool: Pool }) {
           {proposal.status === "passed" ? t(v.passed, { fee: fee(pool.fee) }) : t(v.rejected, { fee: fee(pool.fee) })}
         </p>
       ) : !connected || !position ? (
-        <p className="mt-5 rounded-2xl border border-dashed px-4 py-3 text-sm text-muted-foreground">{v.onlyLps}</p>
+        <Empty align="start" size="sm" className="mt-5">
+          <EmptyDescription>{v.onlyLps}</EmptyDescription>
+        </Empty>
       ) : proposal.yourVote ? (
         <div className="mt-5 flex flex-col gap-3">
           <p className="fs-fade-up rounded-2xl bg-secondary px-4 py-3 text-sm font-semibold">
