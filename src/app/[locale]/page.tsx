@@ -14,7 +14,7 @@ import { notFound } from "next/navigation"
 
 import { HeroCurve } from "@/components/home/hero-curve"
 import { TwoPools } from "@/components/home/two-pools"
-import { SectionDivider } from "@/components/site/section-divider"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -177,7 +177,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       {/* Closing */}
       <section aria-labelledby="closing-title">

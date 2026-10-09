@@ -6,7 +6,7 @@ import { notFound } from "next/navigation"
 
 import { CurveExplorer } from "@/components/how/curve-explorer"
 import { LpDiagram, RouteDiagram } from "@/components/how/diagrams"
-import { SectionDivider } from "@/components/site/section-divider"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale, REPO_URL } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -227,7 +227,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
         </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       <section aria-labelledby="how-cta-title">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-14 sm:px-6 md:flex-row md:items-center md:justify-between lg:py-16">
