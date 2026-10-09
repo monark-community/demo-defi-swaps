@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
@@ -49,6 +49,6 @@
   "packageManager": "pnpm@10.28.0",
   "description": "Fluidswap by Monark: a testnet exchange that shows the pool math behind every swap (simulated demo).",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   }
 }

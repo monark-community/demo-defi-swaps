@@ -9,7 +9,7 @@ It is part of the Monark DeFi demos. Fluidswap is the trader's view; [Yieldmine]
 
 ## Run it locally
 
-Requirements: Node 22 and pnpm 10.
+Requirements: Node 24 and pnpm 10.
 
 ```sh
 pnpm install
@@ -100,6 +100,6 @@ This writes `docs/screenshots/<locale>-<width>-<theme>-<name>.png`: every page a
 
 ## Deploy to Vercel
 
-Import the repository in Vercel and keep the framework defaults (Next.js, `pnpm install`, `pnpm build`). No `vercel.json` and no environment variables are needed. Node 22 is pinned in `package.json` `engines`.
+Import the repository in Vercel and keep the framework defaults (Next.js, `pnpm install`, `pnpm build`). No `vercel.json` and no environment variables are needed. Node 24 is pinned in `package.json` `engines`.
 
 Open source, part of [Monark](https://www.monark.io): Fostering Collaboration within the Web3 Community.
