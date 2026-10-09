@@ -134,8 +134,8 @@ export function PositionCard({ pool }: { pool: Pool }) {
               <dl className="flex flex-col gap-2 rounded-2xl border px-4 py-3 text-sm">
                 <Line label={p.tokens}>
                   <span className="flex flex-col items-end">
-                    <TokenAmount value={toBaseUnits(v.amountA, pool.a)} decimals={TOKENS[pool.a].decimals} symbol={pool.a} fractionDigits={4} locale={nf} />
-                    <TokenAmount value={toBaseUnits(v.amountB, pool.b)} decimals={TOKENS[pool.b].decimals} symbol={pool.b} fractionDigits={pool.b === "tETH" ? 4 : 2} locale={nf} />
+                    <TokenAmount mono value={toBaseUnits(v.amountA, pool.a)} decimals={TOKENS[pool.a].decimals} symbol={pool.a} fractionDigits={4} locale={nf} />
+                    <TokenAmount mono value={toBaseUnits(v.amountB, pool.b)} decimals={TOKENS[pool.b].decimals} symbol={pool.b} fractionDigits={pool.b === "tETH" ? 4 : 2} locale={nf} />
                   </span>
                 </Line>
                 <Line label={p.feesEarned}>
@@ -157,19 +157,19 @@ export function PositionCard({ pool }: { pool: Pool }) {
 
           <Tabs value={position ? tab : "add"} onValueChange={setTab} className="mt-5">
             <TabsList className="w-full">
-              <TabsTrigger value="add" className="flex-1">
-                <PlusIcon className="size-4" aria-hidden="true" />
+              <TabsTrigger value="add">
+                <PlusIcon aria-hidden="true" />
                 {app.pool.add.tab}
               </TabsTrigger>
-              <TabsTrigger value="remove" className="flex-1" disabled={!position}>
-                <MinusIcon className="size-4" aria-hidden="true" />
+              <TabsTrigger value="remove" disabled={!position}>
+                <MinusIcon aria-hidden="true" />
                 {app.pool.remove.tab}
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="add" className="mt-4">
+            <TabsContent value="add" className="mt-2">
               <AddLiquidity pool={pool} />
             </TabsContent>
-            <TabsContent value="remove" className="mt-4">
+            <TabsContent value="remove" className="mt-2">
               {position ? <RemoveLiquidity pool={pool} /> : null}
             </TabsContent>
           </Tabs>
@@ -344,7 +344,7 @@ function RemoveLiquidity({ pool }: { pool: Pool }) {
         value={[pct]}
         onValueChange={(v) => setPct(v[0] ?? 1)}
         thumbLabel={r.percentLabel}
-        valueText={formatPercent(fraction, locale, 0)}
+        valueText={() => formatPercent(fraction, locale, 0)}
         disabled={tx.busy}
       />
       <div className="grid grid-cols-4 gap-2">
@@ -357,8 +357,8 @@ function RemoveLiquidity({ pool }: { pool: Pool }) {
       <dl className="flex flex-col gap-2 rounded-2xl border px-4 py-3 text-sm">
         <Line label={r.receive}>
           <span className="flex flex-col items-end">
-            <TokenAmount value={toBaseUnits(outA, pool.a)} decimals={TOKENS[pool.a].decimals} symbol={pool.a} fractionDigits={4} locale={nf} />
-            <TokenAmount value={toBaseUnits(outB, pool.b)} decimals={TOKENS[pool.b].decimals} symbol={pool.b} fractionDigits={pool.b === "tETH" ? 4 : 2} locale={nf} />
+            <TokenAmount mono value={toBaseUnits(outA, pool.a)} decimals={TOKENS[pool.a].decimals} symbol={pool.a} fractionDigits={4} locale={nf} />
+            <TokenAmount mono value={toBaseUnits(outB, pool.b)} decimals={TOKENS[pool.b].decimals} symbol={pool.b} fractionDigits={pool.b === "tETH" ? 4 : 2} locale={nf} />
           </span>
         </Line>
         <Line label={r.burn}>{formatNumber(burn, locale, 4)}</Line>

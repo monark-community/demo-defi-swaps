@@ -57,7 +57,7 @@ export function TwoPools({ labels, locale }: { labels: TwoPoolsLabels; locale: L
         value={[amount]}
         onValueChange={(v) => setAmount(v[0] ?? 100)}
         thumbLabel={labels.sliderLabel}
-        valueText={`${amountText} tUSDC`}
+        valueText={() => `${amountText} tUSDC`}
       />
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -95,6 +95,7 @@ export function TwoPools({ labels, locale }: { labels: TwoPoolsLabels; locale: L
                 <span className="text-sm font-semibold text-muted-foreground">{labels.receive}</span>
                 <span className="text-right">
                   <TokenAmount
+                    mono
                     value={toBaseUnits(out, p.out)}
                     decimals={TOKENS[p.out].decimals}
                     symbol={p.out}

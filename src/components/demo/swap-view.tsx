@@ -486,9 +486,9 @@ function RecentSwaps() {
               <span className="flex min-w-0 items-center gap-2 text-sm font-semibold">
                 {a.tokenIn && a.tokenOut ? (
                   <>
-                    <TokenAmount value={toBaseUnits(a.amountIn ?? 0, a.tokenIn)} decimals={TOKENS[a.tokenIn].decimals} symbol={a.tokenIn} fractionDigits={4} locale={nf} />
+                    <TokenAmount mono value={toBaseUnits(a.amountIn ?? 0, a.tokenIn)} decimals={TOKENS[a.tokenIn].decimals} symbol={a.tokenIn} fractionDigits={4} locale={nf} />
                     <ArrowRightIcon className="size-3.5 text-muted-foreground" aria-hidden="true" />
-                    <TokenAmount value={toBaseUnits(a.amountOut ?? 0, a.tokenOut)} decimals={TOKENS[a.tokenOut].decimals} symbol={a.tokenOut} fractionDigits={4} locale={nf} />
+                    <TokenAmount mono value={toBaseUnits(a.amountOut ?? 0, a.tokenOut)} decimals={TOKENS[a.tokenOut].decimals} symbol={a.tokenOut} fractionDigits={4} locale={nf} />
                   </>
                 ) : null}
               </span>

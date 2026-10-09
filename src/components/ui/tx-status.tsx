@@ -8,7 +8,7 @@ import {
   XCircleIcon,
 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "cn"
 
 type TxStatusKind = "pending" | "confirmed" | "failed"
 
@@ -28,7 +28,7 @@ const statusConfig: Record<
   confirmed: {
     icon: CheckCircle2Icon,
     label: "Confirmed",
-    tone: "text-emerald-600 dark:text-emerald-400",
+    tone: "text-success",
   },
   failed: {
     icon: XCircleIcon,
@@ -70,14 +70,14 @@ function TxStatus({
       data-slot="tx-status"
       data-status={status}
       className={cn(
-        "inline-flex items-center gap-2 rounded-md border bg-card px-3 py-2 text-sm shadow-xs",
+        "inline-flex w-fit max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border bg-card px-3 py-1.5 text-sm",
         className
       )}
       {...props}
     >
       <span className={cn("inline-flex items-center gap-1.5", config.tone)}>
         <Icon className="size-4" />
-        <span className="font-medium">{label ?? config.label}</span>
+        <span className="font-bold">{label ?? config.label}</span>
       </span>
       <span aria-hidden="true" className="text-muted-foreground">
         ·
@@ -88,7 +88,7 @@ function TxStatus({
           target="_blank"
           rel="noopener noreferrer"
           title={hash}
-          className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground tabular-nums hover:text-foreground hover:underline underline-offset-4"
+          className="inline-flex items-center gap-1 rounded-sm font-mono text-xs text-muted-foreground tabular-nums underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           {truncateHash(hash)}
           <ExternalLinkIcon className="size-3" />

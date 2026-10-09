@@ -77,7 +77,7 @@ export function CurveExplorer({ labels, locale }: { labels: ExplorerLabels; loca
               <p className="text-sm font-bold">{labels.size}</p>
               <p className="text-xl font-extrabold tabular-nums">{amountText}</p>
             </div>
-            <Slider min={0} max={100} step={1} value={[pos]} onValueChange={(v) => setPos(v[0] ?? 0)} thumbLabel={labels.size} valueText={amountText} />
+            <Slider min={0} max={100} step={1} value={[pos]} onValueChange={(v) => setPos(v[0] ?? 0)} thumbLabel={labels.size} valueText={() => amountText} />
           </div>
           <div>
             <p className="text-sm font-bold" id="depth-label">
