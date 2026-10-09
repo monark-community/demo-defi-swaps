@@ -83,14 +83,14 @@ export function HeroCurve({ labels, locale }: { labels: HeroCurveLabels; locale:
           <dt className="text-xs font-semibold text-muted-foreground">{labels.pay}</dt>
           <dd className="flex items-center gap-2 text-base font-bold">
             <TokenMark symbol="tETH" size={20} />
-            <TokenAmount value={toBaseUnits(amountIn, "tETH")} decimals={TOKENS.tETH.decimals} symbol="tETH" fractionDigits={2} locale={nf} />
+            <TokenAmount mono value={toBaseUnits(amountIn, "tETH")} decimals={TOKENS.tETH.decimals} symbol="tETH" fractionDigits={2} locale={nf} />
           </dd>
         </div>
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold text-muted-foreground">{labels.receive}</dt>
           <dd className="flex items-center gap-2 text-base font-bold">
             <TokenMark symbol="tUSDC" size={20} />
-            <TokenAmount value={toBaseUnits(out, "tUSDC")} decimals={TOKENS.tUSDC.decimals} symbol="tUSDC" fractionDigits={2} locale={nf} />
+            <TokenAmount mono value={toBaseUnits(out, "tUSDC")} decimals={TOKENS.tUSDC.decimals} symbol="tUSDC" fractionDigits={2} locale={nf} />
           </dd>
         </div>
         <div className="flex flex-col gap-1">
@@ -102,7 +102,7 @@ export function HeroCurve({ labels, locale }: { labels: HeroCurveLabels; locale:
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold text-muted-foreground">{labels.min}</dt>
           <dd className="text-sm font-semibold">
-            <TokenAmount value={toBaseUnits(out * 0.995, "tUSDC")} decimals={TOKENS.tUSDC.decimals} symbol="tUSDC" fractionDigits={2} locale={nf} />
+            <TokenAmount mono value={toBaseUnits(out * 0.995, "tUSDC")} decimals={TOKENS.tUSDC.decimals} symbol="tUSDC" fractionDigits={2} locale={nf} />
           </dd>
         </div>
       </dl>

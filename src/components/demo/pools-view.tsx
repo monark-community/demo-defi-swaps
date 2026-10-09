@@ -3,7 +3,10 @@
 import { ArrowRightIcon, PlusIcon } from "lucide-react"
 import Link from "next/link"
 
+import { AppLoading } from "@/components/ui/app-loading"
+import { Empty, EmptyDescription } from "@/components/ui/empty"
 import { InfoTip } from "@/components/ui/info-tip"
+import { Stat, StatGroup, StatLabel, StatValue } from "@/components/ui/stat"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { feeApr, poolPrice, poolTvlUsd, viewPosition } from "@/lib/demo/amm"
@@ -43,32 +46,34 @@ export function PoolsView() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:py-10">
       <h1 className="text-3xl font-extrabold tracking-display">{p.title}</h1>
 
-      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <StatGroup className="sm:grid-cols-3 lg:grid-cols-3">
         {[
           { label: p.tvl, value: formatUsd(tvl, locale, { compact: true }) },
           { label: p.volume, value: formatUsd(volume, locale, { compact: true }) },
           { label: p.fees, value: formatUsd(fees, locale) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-2xl border bg-card px-5 py-4">
-            <dt className="text-sm font-semibold text-muted-foreground">{stat.label}</dt>
-            <dd className="mt-1 text-2xl font-extrabold tabular-nums">{stat.value}</dd>
-          </div>
+          <Stat key={stat.label}>
+            <StatLabel>{stat.label}</StatLabel>
+            <StatValue>{stat.value}</StatValue>
+          </Stat>
         ))}
-      </dl>
+      </StatGroup>
 
       <section aria-labelledby="positions-title">
         <h2 id="positions-title" className="text-xl font-bold">
           {p.yourPositions}
         </h2>
         {!connected ? (
-          <p className="mt-3 rounded-2xl border border-dashed px-5 py-6 text-sm text-muted-foreground">{p.connectToSee}</p>
+          <Empty align="start" size="sm" className="mt-3">
+            <EmptyDescription>{p.connectToSee}</EmptyDescription>
+          </Empty>
         ) : demo.positions.length === 0 ? (
-          <div className="mt-3 flex flex-col items-start gap-3 rounded-2xl border border-dashed px-5 py-6">
-            <p className="text-sm text-muted-foreground">{p.positionsEmpty}</p>
-            <Link href={href(locale, "/app/pools/eth-usdc")} className="text-sm font-bold text-primary-ink underline underline-offset-4">
-              {p.positionsEmptyCta}
-            </Link>
-          </div>
+          <Empty align="start" size="sm" className="mt-3">
+            <EmptyDescription>{p.positionsEmpty}</EmptyDescription>
+            <EmptyDescription>
+              <Link href={href(locale, "/app/pools/eth-usdc")}>{p.positionsEmptyCta}</Link>
+            </EmptyDescription>
+          </Empty>
         ) : (
           <ul className="mt-3 grid gap-3 md:grid-cols-2">
             {demo.positions.map((pos) => {
@@ -92,9 +97,9 @@ export function PoolsView() {
                       <ArrowRightIcon className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                     </span>
                     <span className="grid grid-cols-3 gap-3 text-sm">
-                      <Stat label={app.pool.position.value} value={formatUsd(v.valueUsd, locale)} />
-                      <Stat label={app.pool.position.share} value={formatPercent(v.share, locale)} />
-                      <Stat label={app.pool.position.feesEarned} value={formatUsd(pos.feesUsd, locale)} />
+                      <MiniStat label={app.pool.position.value} value={formatUsd(v.valueUsd, locale)} />
+                      <MiniStat label={app.pool.position.share} value={formatPercent(v.share, locale)} />
+                      <MiniStat label={app.pool.position.feesEarned} value={formatUsd(pos.feesUsd, locale)} />
                     </span>
                   </Link>
                 </li>
@@ -159,9 +164,9 @@ export function PoolsView() {
                   <FeeTier fee={pool.fee} />
                 </span>
                 <span className="grid grid-cols-3 gap-2 text-sm">
-                  <Stat label={p.tvl} value={formatUsd(poolTvlUsd(pool), locale, { compact: true })} />
-                  <Stat label={p.volume} value={formatUsd(pool.volumeUsd24h, locale, { compact: true })} />
-                  <Stat label={p.apr} value={formatPercent(feeApr(pool), locale)} />
+                  <MiniStat label={p.tvl} value={formatUsd(poolTvlUsd(pool), locale, { compact: true })} />
+                  <MiniStat label={p.volume} value={formatUsd(pool.volumeUsd24h, locale, { compact: true })} />
+                  <MiniStat label={p.apr} value={formatPercent(feeApr(pool), locale)} />
                 </span>
                 <span className="text-xs text-muted-foreground">
                   <PriceText pool={pool} />
@@ -203,7 +208,7 @@ function PriceText({ pool }: { pool: Pool }) {
   return <>{t(app.pool.priceOf, { a: pool.a, b: pool.b, price: formatPrice(poolPrice(pool), locale) })}</>
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function MiniStat({ label, value }: { label: string; value: string }) {
   return (
     <span className="flex min-w-0 flex-col">
       <span className="truncate text-xs text-muted-foreground">{label}</span>
@@ -213,15 +218,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export function PageSkeleton() {
+  const { app } = useAppCopy()
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:py-10" aria-hidden="true">
-      <div className="h-9 w-40 animate-pulse rounded-full bg-muted" />
-      <div className="grid gap-3 sm:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted" />
-        ))}
-      </div>
-      <div className="h-64 animate-pulse rounded-3xl bg-muted" />
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
+      <AppLoading label={app.loading} stats={3} panels={1} />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { ArrowRightIcon, CheckIcon, ChevronDownIcon, ExternalLinkIcon } from "lucide-react"
+import { ArrowRightIcon, CheckIcon, ExternalLinkIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -6,7 +6,8 @@ import { notFound } from "next/navigation"
 
 import { CurveExplorer } from "@/components/how/curve-explorer"
 import { LpDiagram, RouteDiagram } from "@/components/how/diagrams"
-import { SectionDivider } from "@/components/site/section-divider"
+import { Disclosure } from "@/components/ui/disclosure"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale, REPO_URL } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -193,12 +194,8 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
             </h2>
             <p className="mt-3 text-muted-foreground">{h.dev.body}</p>
           </div>
-          <details className="group mt-6">
-            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border px-4 text-sm font-bold transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
-              <ChevronDownIcon className="size-4 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
-              {h.dev.show}
-            </summary>
-            <div className="mt-4 overflow-hidden rounded-3xl border bg-card">
+          <Disclosure variant="pill" summary={h.dev.show} className="mt-6">
+            <div className="overflow-hidden rounded-3xl border bg-card">
               <table className="w-full text-left text-sm">
                 <thead className="hidden sm:table-header-group">
                   <tr className="border-b text-muted-foreground">
@@ -219,7 +216,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
               </table>
             </div>
             <p className="mt-4 max-w-[68ch] text-sm text-muted-foreground">{h.dev.approvals}</p>
-          </details>
+          </Disclosure>
           <a href={REPO_URL} className="mt-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-bold text-primary-ink underline underline-offset-4">
             {h.dev.source}
             <ExternalLinkIcon className="size-3.5" aria-hidden="true" />
@@ -227,7 +224,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
         </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       <section aria-labelledby="how-cta-title">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-14 sm:px-6 md:flex-row md:items-center md:justify-between lg:py-16">

@@ -44,7 +44,7 @@ export function WalletSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="h-10">
+        <Button variant="outline">
           <WalletIcon aria-hidden="true" />
           <span className="hidden sm:inline">{w.balances}</span>
           {connected ? (
@@ -53,9 +53,9 @@ export function WalletSheet() {
           <span className="sr-only sm:hidden">{w.balances}</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" closeLabel={close} className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+      <SheetContent side="right" closeLabel={close} className="sm:max-w-md">
         <SheetHeader className="border-b px-5 py-4 text-left">
-          <SheetTitle className="text-base font-extrabold">{w.balancesTitle}</SheetTitle>
+          <SheetTitle className="text-base">{w.balancesTitle}</SheetTitle>
           <SheetDescription>{w.faucetHint}</SheetDescription>
         </SheetHeader>
         {demo && connected ? (
@@ -73,6 +73,7 @@ export function WalletSheet() {
                       </span>
                     </span>
                     <TokenAmount
+                      mono
                       value={toBaseUnits(demo.balances[s], s)}
                       decimals={TOKENS[s].decimals}
                       fractionDigits={s === "tWBTC" ? 6 : 4}

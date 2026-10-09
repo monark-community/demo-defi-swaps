@@ -5,6 +5,9 @@ import Link from "next/link"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription } from "@/components/ui/empty"
+import { Stat, StatGroup, StatLabel, StatValue } from "@/components/ui/stat"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { TxStatus } from "@/components/ui/tx-status"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
@@ -64,25 +67,25 @@ export function ActivityView() {
       <h1 className="text-3xl font-extrabold tracking-display">{ac.title}</h1>
 
       {!connected ? (
-        <div className="flex flex-col items-start gap-3 rounded-3xl border border-dashed p-6">
-          <p className="text-muted-foreground">{ac.connect}</p>
+        <Empty align="start" size="lg">
+          <EmptyDescription>{ac.connect}</EmptyDescription>
           <ConnectButton />
-        </div>
+        </Empty>
       ) : (
         <>
-          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatGroup className="grid-cols-2">
             {[
               { label: ac.stats.swaps, value: String(confirmedSwaps.length) },
               { label: ac.stats.volume, value: formatUsd(volume, locale) },
               { label: ac.stats.feesPaid, value: formatUsd(feesPaid, locale) },
               { label: ac.stats.lpFees, value: formatUsd(lpFees, locale) },
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl border bg-card px-4 py-4 sm:px-5">
-                <dt className="text-xs font-semibold text-muted-foreground sm:text-sm">{s.label}</dt>
-                <dd className="mt-1 text-xl font-extrabold tabular-nums sm:text-2xl">{s.value}</dd>
-              </div>
+              <Stat key={s.label}>
+                <StatLabel>{s.label}</StatLabel>
+                <StatValue>{s.value}</StatValue>
+              </Stat>
             ))}
-          </dl>
+          </StatGroup>
 
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
             <section className="rounded-3xl border bg-card p-5 sm:p-6" aria-labelledby="history-title">
@@ -90,23 +93,25 @@ export function ActivityView() {
                 <h2 id="history-title" className="text-lg font-extrabold">
                   {ac.history}
                 </h2>
-                <div role="group" aria-label={ac.filters.label} className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+                <ToggleGroup
+                  type="single"
+                  variant="chip"
+                  size="sm"
+                  value={filter}
+                  onValueChange={(v) => {
+                    if (!v) return
+                    setFilter(v as Filter)
+                    setShown(PAGE)
+                  }}
+                  aria-label={ac.filters.label}
+                  className="no-scrollbar -mx-1 max-w-full flex-nowrap overflow-x-auto px-1 py-1"
+                >
                   {(["all", "swaps", "liquidity", "votes", "failed"] as Filter[]).map((f) => (
-                    <Button
-                      key={f}
-                      size="sm"
-                      variant={filter === f ? "default" : "outline"}
-                      aria-pressed={filter === f}
-                      onClick={() => {
-                        setFilter(f)
-                        setShown(PAGE)
-                      }}
-                      className="shrink-0"
-                    >
+                    <ToggleGroupItem key={f} value={f}>
                       {ac.filters[f]}
-                    </Button>
+                    </ToggleGroupItem>
                   ))}
-                </div>
+                </ToggleGroup>
               </div>
               {items.length ? (
                 <>
@@ -122,14 +127,14 @@ export function ActivityView() {
                   ) : null}
                 </>
               ) : (
-                <div className="mt-4 flex flex-col items-start gap-3 rounded-2xl border border-dashed p-5">
-                  <p className="text-sm text-muted-foreground">{demo.activity.length ? ac.emptyFiltered : ac.empty}</p>
+                <Empty align="start" size="sm" role="status" className="mt-4">
+                  <EmptyDescription>{demo.activity.length ? ac.emptyFiltered : ac.empty}</EmptyDescription>
                   {!demo.activity.length ? (
                     <Button asChild size="sm">
                       <Link href={href(locale, "/app")}>{ac.emptyCta}</Link>
                     </Button>
                   ) : null}
-                </div>
+                </Empty>
               )}
             </section>
 

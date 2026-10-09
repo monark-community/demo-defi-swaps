@@ -1,20 +1,16 @@
 "use client"
 
-import Image from "next/image"
 import { useMemo } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { NetworkBadge } from "@/components/ui/network-badge"
-import { WalletAvatar, WalletAddress } from "@/components/ui/wallet"
+import { MonarkMark } from "@/components/ui/site-brand"
+import { WalletPrompt as MonarkWalletPrompt } from "@/components/ui/wallet-prompt"
 import { estimateFee } from "@/lib/demo/chain"
 import { useDemo, usePrompt } from "@/lib/demo/store"
 import { NETWORK_NAME } from "@/lib/demo/tokens"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 
-/** The simulated wallet's confirmation sheet. Closing it counts as a rejection. */
+/** The simulated wallet's confirmation sheet (@monark/ui wallet-prompt). Closing it counts as a rejection. */
 export function WalletPrompt() {
   const prompt = usePrompt()
   const demo = useDemo()
@@ -22,62 +18,33 @@ export function WalletPrompt() {
   const p = app.prompt
   // A fresh fee estimate per request.
   const fee = useMemo(() => (prompt ? estimateFee() : 0), [prompt])
-  const feeText = fee ? `${fee.toLocaleString(locale === "fr" ? "fr-CA" : "en-CA", { maximumFractionDigits: 5 })} tETH` : ""
+  const feeText = fee ? `${fee.toLocaleString(locale === "fr" ? "fr-CA" : "en-CA", { maximumFractionDigits: 5 })} tETH` : undefined
+  const summary = prompt?.summary
 
   return (
-    <Dialog open={!!prompt} onOpenChange={(open) => !open && prompt?.resolve(false)}>
-      <DialogContent closeLabel={close} className="gap-5 sm:max-w-md">
-        <DialogHeader className="gap-1 text-left">
-          <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-            <Image src="/brand/monark-mark.svg" alt="" width={20} height={20} unoptimized className="size-5" />
-            {p.site}
-          </div>
-          <DialogTitle className="pt-2 text-xl font-extrabold">{prompt?.summary.title ?? p.title}</DialogTitle>
-          <DialogDescription>{p.title}</DialogDescription>
-        </DialogHeader>
-
-        {demo ? (
-          <div className="flex items-center gap-3 rounded-2xl border bg-muted/50 p-3">
-            <WalletAvatar address={demo.wallet.address} size={32} />
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-bold">{app.wallet.name}</p>
-              <WalletAddress address={demo.wallet.address} className="text-xs text-muted-foreground" />
-            </div>
-          </div>
-        ) : null}
-
-        <dl className="divide-y rounded-2xl border text-sm">
-          {prompt?.summary.rows?.map((row) => (
-            <div key={row.label} className="flex items-start justify-between gap-4 px-4 py-2.5">
-              <dt className="text-muted-foreground">{row.label}</dt>
-              <dd className="text-right font-semibold">{row.value}</dd>
-            </div>
-          ))}
-          <div className="flex items-center justify-between gap-4 px-4 py-2.5">
-            <dt className="text-muted-foreground">{p.network}</dt>
-            <dd>
-              <NetworkBadge name={NETWORK_NAME} variant="outline" icon={<span className="block size-full rounded-full bg-success" />} />
-            </dd>
-          </div>
-          {!prompt?.summary.noFee ? (
-            <div className="flex items-center justify-between gap-4 px-4 py-2.5">
-              <dt className="text-muted-foreground">{p.fee}</dt>
-              <dd className="font-mono text-xs">{feeText}</dd>
-            </div>
-          ) : null}
-        </dl>
-
-        {prompt?.summary.movesValue ? <Disclaimer text={disclaimer} /> : <p className="text-xs text-muted-foreground">{p.simulated}</p>}
-
-        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button variant="outline" size="lg" onClick={() => prompt?.resolve(false)}>
-            {p.reject}
-          </Button>
-          <Button size="lg" onClick={() => prompt?.resolve(true)} autoFocus>
-            {p.confirm}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <MonarkWalletPrompt
+      open={!!prompt}
+      onReject={() => prompt?.resolve(false)}
+      onConfirm={() => prompt?.resolve(true)}
+      site={
+        <>
+          <MonarkMark />
+          {p.site}
+        </>
+      }
+      title={summary?.title ?? p.title}
+      description={p.title}
+      account={demo ? { name: app.wallet.name, address: demo.wallet.address } : undefined}
+      rows={summary?.rows ?? []}
+      network={NETWORK_NAME}
+      networkLabel={p.network}
+      fee={summary?.noFee ? undefined : feeText}
+      feeLabel={p.fee}
+      disclaimer={summary?.movesValue ? disclaimer : p.simulated}
+      warning={summary?.movesValue}
+      confirmLabel={p.confirm}
+      rejectLabel={p.reject}
+      closeLabel={close}
+    />
   )
 }

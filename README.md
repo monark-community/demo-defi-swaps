@@ -32,7 +32,7 @@ No environment variables are needed. `NEXT_PUBLIC_SITE_URL` (default `https://fl
 | Route | What it is |
 |-|-|
 | `/{en,fr}` | Home: the live curve hero, "same trade, two pools", what the demo does, who it's for, FAQ |
-| `/{locale}/app` | Swap: the registry `swap-form` with a full quote, slippage settings, a high-impact acknowledgement, your trade on the curve, and the reserve bars |
+| `/{locale}/app` | Swap: a fork of the registry `swap-form` with a full quote, slippage settings, a high-impact acknowledgement, your trade on the curve, and the reserve bars |
 | `/{locale}/app/pools` | Pools: totals, your positions, all pools with fee APR, and pairs that have no pool yet |
 | `/{locale}/app/pools/[id]` | One pool: price chart, reserves, live trades, your position (add or remove liquidity, fees earned, compared with holding) and the LP fee vote. For a pair with no pool, the form to create it |
 | `/{locale}/app/activity` | Your history (failed transactions included), your stats, and volume by pool |
@@ -69,13 +69,14 @@ You'll find these switches, plus "Slow network", "Live market" and **Reset demo*
 src/
   app/[locale]/        pages (home, app/*, how-it-works, credits, pricing), layout, 404, error, OG image
   app/sitemap.ts       sitemap (without /pricing), robots.ts, icon.svg
-  components/ui/       shadcn components from the Monark UI registry (swap-form, token-amount,
-                       tx-status, wallet, connect-wallet, network-badge, …), restyled to Monark pills
+  components/ui/       @monark/ui 2 items, installed with the shadcn CLI: primitives, web3 (wallet,
+                       token-amount, tx-status, …), site shell, demo app (app-tabs, wallet-prompt,
+                       tx-feedback, demo-controls, …) and patterns; swap-form is a local fork
   components/demo/     the exchange: swap view, pools, pool page, liquidity, fee vote, activity, prompts
   components/diagrams/ curve chart, reserve bars, price chart
   components/home/     hero curve, "same trade, two pools"
   components/how/      curve explorer, route and LP diagrams
-  components/site/     Monark shell: brand, nav, Demo chip, EN/FR switch, theme toggle, footer
+  components/site/     the registry header and footer, wired to Fluidswap's strings and links
   i18n/                typed EN/FR dictionaries (French must match the English shape)
   lib/demo/            the simulated chain, wallet and AMM (see above)
   proxy.ts             redirects / to the visitor's language
@@ -86,7 +87,7 @@ docs/
 scripts/screenshots.mjs
 ```
 
-Theme: the Monark `@monark/ui` base theme, with the brand guidelines' cream and espresso tokens pasted over it (`src/app/globals.css`). The `@monark` registry is declared in `components.json`.
+Theme: the `@monark/ui` 2 theme (`src/app/globals.css`), plus Fluidswap's own motion classes. The `@monark` registry is declared in `components.json`; re-add an item with `pnpm dlx shadcn@latest add @monark/<item> --overwrite`.
 
 ## Screenshots
 

@@ -261,6 +261,7 @@ const en = {
   },
 
   app: {
+    loading: "Loading the exchange…",
     tabs: { label: "Exchange sections", swap: "Swap", pools: "Pools", activity: "Activity" },
     wallet: {
       connect: "Connect wallet",
@@ -305,7 +306,6 @@ const en = {
     controls: {
       open: "Demo controls",
       title: "Demo controls",
-      description: "Shape the simulation.",
       slow: "Slow network",
       slowHint: "Blocks take 3 to 6 seconds.",
       failNext: "Fail the next transaction",
@@ -315,6 +315,11 @@ const en = {
       liveMarket: "Live market",
       liveMarketHint: "Other traders swap in the background.",
       reset: "Reset demo",
+      resetHint: "Brings back the starting pools, balances and history.",
+      resetConfirmTitle: "Reset the demo?",
+      resetConfirmBody: "Your swaps, positions and votes will be erased.",
+      resetConfirmLabel: "Yes, reset",
+      cancel: "Cancel",
       resetDone: "Demo reset",
       storage: "Your browser isn't saving the demo, so it will restart when you reload.",
     },

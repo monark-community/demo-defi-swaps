@@ -3,6 +3,7 @@
 import { Loader2Icon, WalletIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { FieldError } from "@/components/ui/field-error"
 import { useDemo } from "@/lib/demo/store"
 import { connectWallet } from "@/lib/demo/wallet"
 import { cn } from "@/lib/utils"
@@ -34,11 +35,7 @@ export function ConnectButton({ className, size = "default", label }: { classNam
         {connecting ? <Loader2Icon className="animate-spin" aria-hidden="true" /> : <WalletIcon aria-hidden="true" />}
         {connecting ? w.connecting : (label ?? w.connectDemo)}
       </Button>
-      {demo?.wallet.lastError === "rejected" ? (
-        <p role="alert" className="text-sm text-destructive">
-          {w.rejected}
-        </p>
-      ) : null}
+      <FieldError>{demo?.wallet.lastError === "rejected" ? w.rejected : null}</FieldError>
     </div>
   )
 }
