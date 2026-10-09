@@ -44,7 +44,7 @@ export function WalletSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="h-10">
+        <Button variant="outline">
           <WalletIcon aria-hidden="true" />
           <span className="hidden sm:inline">{w.balances}</span>
           {connected ? (

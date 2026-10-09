@@ -3,6 +3,7 @@
 import { ArrowRightIcon, PlusIcon } from "lucide-react"
 import Link from "next/link"
 
+import { AppLoading } from "@/components/ui/app-loading"
 import { InfoTip } from "@/components/ui/info-tip"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
@@ -213,15 +214,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export function PageSkeleton() {
+  const { app } = useAppCopy()
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:py-10" aria-hidden="true">
-      <div className="h-9 w-40 animate-pulse rounded-full bg-muted" />
-      <div className="grid gap-3 sm:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted" />
-        ))}
-      </div>
-      <div className="h-64 animate-pulse rounded-3xl bg-muted" />
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
+      <AppLoading label={app.loading} stats={3} panels={1} />
     </div>
   )
 }

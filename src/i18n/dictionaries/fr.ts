@@ -262,6 +262,7 @@ const fr: Dictionary = {
   },
 
   app: {
+    loading: "Chargement de la plateforme…",
     tabs: { label: "Sections de la plateforme", swap: "Échanger", pools: "Pools", activity: "Activité" },
     wallet: {
       connect: "Connecter le portefeuille",
@@ -306,7 +307,6 @@ const fr: Dictionary = {
     controls: {
       open: "Contrôles de démo",
       title: "Contrôles de démo",
-      description: "Modelez la simulation.",
       slow: "Réseau lent",
       slowHint: "Les blocs prennent de 3 à 6 secondes.",
       failNext: "Faire échouer la prochaine transaction",
@@ -316,6 +316,11 @@ const fr: Dictionary = {
       liveMarket: "Marché en direct",
       liveMarketHint: "D'autres traders échangent en arrière-plan.",
       reset: "Réinitialiser la démo",
+      resetHint: "Rétablit les pools, les soldes et l'historique de départ.",
+      resetConfirmTitle: "Réinitialiser la démo ?",
+      resetConfirmBody: "Vos échanges, positions et votes seront effacés.",
+      resetConfirmLabel: "Oui, réinitialiser",
+      cancel: "Annuler",
       resetDone: "Démo réinitialisée",
       storage: "Votre navigateur n'enregistre pas la démo : elle repartira de zéro au rechargement.",
     },

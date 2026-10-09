@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { SwapForm } from "@/components/ui/swap-form"
 import { TokenAmount } from "@/components/ui/token-amount"
 import { TxStatus } from "@/components/ui/tx-status"
@@ -355,7 +356,7 @@ export function SwapView() {
               locale={locale}
             />
           ) : (
-            <div className="mt-6 h-64 animate-pulse rounded-2xl bg-muted" aria-hidden="true" />
+            <Skeleton className="mt-6 h-64 rounded-2xl" aria-hidden="true" />
           )}
           {!hasAmount && demo ? <p className="mt-3 text-sm text-muted-foreground">{s.curve.empty}</p> : null}
         </section>
