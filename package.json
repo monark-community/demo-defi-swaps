@@ -44,7 +44,7 @@
     "eslint-config-next": "16.3.7",
     "playwright": "1.59.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^6"
   },
   "packageManager": "pnpm@10.28.0",
   "description": "Fluidswap by Monark: a testnet exchange that shows the pool math behind every swap (simulated demo).",
